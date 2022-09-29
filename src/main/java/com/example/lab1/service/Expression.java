@@ -1,6 +1,11 @@
 package com.example.lab1.service;
 
+import com.example.lab1.service.exceptions.IllegalExpression;
 import com.example.lab1.service.operators.*;
+import com.example.lab1.service.operators.infixBinaryOperator.Addition;
+import com.example.lab1.service.operators.infixBinaryOperator.Power;
+import com.example.lab1.service.operators.infixBinaryOperator.Product;
+import com.example.lab1.service.operators.infixBinaryOperator.Predicate;
 import com.example.lab1.service.operators.term.Bracket;
 import com.example.lab1.service.operators.term.Cell;
 import com.example.lab1.service.operators.term.Min;
@@ -12,13 +17,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.lang.Math.min;
-
 public class Expression {
     private String string;
     public Integer current;
     private Double result = null;
     private List<Operator> operators;
+
     private Expression() {};
 
     public static Expression parse(String string){
@@ -69,29 +73,41 @@ public class Expression {
                 i+=j-i+1;
                 continue;
             }
+            if (string.startsWith(">=", i) || string.startsWith("<=", i) || string.startsWith("<>", i)) {
+                expression.operators.add(new Predicate(i,string.substring(i,i+2)));
+                i+=2;
+                continue;
+            }
+            if (string.startsWith(">", i) || string.startsWith("<", i) || string.startsWith("=", i) ) {
+                expression.operators.add(new Predicate(i,string.substring(i,i+1)));
+                i++;
+                continue;
+            }
             if (string.startsWith("div", i) || string.startsWith("mod", i)) {
                 expression.operators.add(new Product(i,string.substring(i,i+3)));
                 i+=3;
                 continue;
             }
-            if(string.substring(i, i+4).equals("min(")){
+            if(string.startsWith("min(", i)){
                 int j = findCloseBrackets(i+3,string);
                 expression.operators.add(new Min(i,string.substring(i+4,j)));
                 i+=j-i+1;
                 continue;
             }
-            if(string.substring(i, i+4).equals("max(")){
+            if(string.startsWith("max(", i)){
                 int j = findCloseBrackets(i+3,string);
                 expression.operators.add(new Min(i,string.substring(i+4,j)));
                 i+=j-i+1;
                 continue;
             }
+            throw new IllegalExpression("cant parse "+ string+ " in position:" + i, i);
         }
         return expression;
     }
 
     private static int findCloseBrackets(int i, String string) {
         int k = 1;
+        int start = i;
         while  (i<string.length()){
             i++;
             if (string.charAt(i) == '(')
@@ -101,7 +117,7 @@ public class Expression {
             if (k==0)
                 return i;
         }
-        throw new IllegalArgumentException("wrong number of brackets");
+        throw new IllegalExpression("wrong number of brackets", start);
     }
 
     public boolean hasNext(){
@@ -123,6 +139,9 @@ public class Expression {
                 '}';
     }
 
+    public String getString() {
+        return string;
+    }
     public Double setResult(Double d) {
         return result = d;
     }

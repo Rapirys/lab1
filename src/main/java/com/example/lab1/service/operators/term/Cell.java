@@ -15,6 +15,6 @@ public class Cell extends Operator {
     public Cell (int i, String stringValue){
         super(i, stringValue);
         column = stringValue.charAt(0)-'A';
-        row = Integer.parseInt(stringValue.substring(1));
+        row = Integer.parseInt(stringValue.substring(1)) -1;
     }
 }

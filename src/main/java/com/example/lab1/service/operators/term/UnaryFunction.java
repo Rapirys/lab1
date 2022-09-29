@@ -1,6 +1,7 @@
-package com.example.lab1.service.operators;
+package com.example.lab1.service.operators.term;
 
 import com.example.lab1.service.Expression;
+import com.example.lab1.service.operators.Operator;
 
 public abstract class UnaryFunction extends Operator {
 

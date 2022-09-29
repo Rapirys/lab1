@@ -1,6 +1,5 @@
 package com.example.lab1.service.operators.term;
 
-import com.example.lab1.service.operators.BinaryFunction;
 import com.example.lab1.service.operators.Level;
 
 
