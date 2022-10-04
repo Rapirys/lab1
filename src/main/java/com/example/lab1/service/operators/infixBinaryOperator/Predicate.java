@@ -31,7 +31,7 @@ public class Predicate extends BinaryOperator {
             return Math.abs(a1 - a2) < epsilon || a1<a2;
         if (stringValue.equals("<>"))
             return Math.abs(a1 - a2) > epsilon;
-        else throw new IllegalExpression("in position:" + position,position);
+        else throw new IllegalExpression("Помилка у позиції:" + position,position);
     }
 
     @Override

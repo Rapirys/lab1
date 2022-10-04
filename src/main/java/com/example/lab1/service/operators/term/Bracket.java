@@ -13,6 +13,8 @@ public class Bracket extends UnaryFunction {
 
     @Override
     public Double apply(Double d) {
+        if (d == null)
+            return (double)0;
         return d;
     }
 

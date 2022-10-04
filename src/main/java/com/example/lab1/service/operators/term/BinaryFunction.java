@@ -1,6 +1,7 @@
 package com.example.lab1.service.operators.term;
 
 import com.example.lab1.service.Expression;
+import com.example.lab1.service.exceptions.IllegalExpression;
 import com.example.lab1.service.operators.Operator;
 
 public abstract class BinaryFunction extends Operator {
@@ -9,6 +10,8 @@ public abstract class BinaryFunction extends Operator {
     public BinaryFunction(int position, String stringValue) {
         super(position, stringValue);
         String[] expressions = stringValue.split(", ?");
+        if (expressions.length != 2)
+            throw new IllegalExpression("Невірна кількість агрументів у функції. " + stringValue +  ": " + position,position);
         expression1 = Expression.parse(expressions[0]);
         expression2 = Expression.parse(expressions[1]);
     }

@@ -14,7 +14,7 @@ public class Addition extends BinaryOperator {
             return a1+a2;
         if (stringValue.equals("-"))
             return a1-a2;
-        else throw new IllegalExpression("in position:" + position,position);
+        else throw new IllegalExpression("Помилка у позиції:" + position,position);
     }
 
     @Override

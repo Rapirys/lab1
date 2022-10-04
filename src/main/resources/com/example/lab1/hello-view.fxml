@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import org.controlsfx.control.tableview2.TableColumn2?>
 <?import org.controlsfx.control.tableview2.FilteredTableColumn?>
+<?import javafx.scene.text.Text?>
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.lab1.controller.TableController">
     <padding>
@@ -18,5 +19,8 @@
     <TableView fx:id="table" editable="true" prefHeight="736.0" prefWidth="800.0">
     </TableView>
 
-    <Button text="Execute!" onAction="#execute"/>
+    <Text fx:id="errorMessage" visible="false"></Text>
+
+    <Button fx:id="executionButton" text="Обчислити" onAction="#execute"/>
+    <Button fx:id="info" text="Інфо" onAction="#info"/>
 </VBox>

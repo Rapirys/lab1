@@ -1,6 +1,7 @@
 package com.example.lab1.service;
 
 import com.example.lab1.service.exceptions.IllegalExpression;
+import com.example.lab1.service.exceptions.ParseIllegalExpression;
 import com.example.lab1.service.operators.*;
 import com.example.lab1.service.operators.infixBinaryOperator.Addition;
 import com.example.lab1.service.operators.infixBinaryOperator.Power;
@@ -12,6 +13,7 @@ import com.example.lab1.service.operators.term.Min;
 import com.example.lab1.service.operators.term.Number;
 
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -49,14 +51,6 @@ public class Expression {
             if (string.charAt(i) == '^') {
                 expression.operators.add(new Power(i,String.valueOf(string.charAt(i))));
                 i++;
-                continue;
-            }
-            if (string.substring(i,i+1).matches("[A-Z]")){
-                Matcher mathcer = Pattern.compile("[A-Z][0-9]+").matcher(string.substring(i));
-                mathcer.find();
-                String cell =mathcer.group();
-                expression.operators.add(new Cell(i,cell));
-                i+=cell.length();
                 continue;
             }
             if (string.substring(i,i+1).matches("[0-9]")) {
@@ -100,7 +94,15 @@ public class Expression {
                 i+=j-i+1;
                 continue;
             }
-            throw new IllegalExpression("cant parse "+ string+ " in position:" + i, i);
+            if (i+1<string.length() && string.substring(i,i+2).matches("[A-Z][0-9]")){
+                Matcher mathcer = Pattern.compile("[A-Z][0-9]+").matcher(string.substring(i));
+                mathcer.find();
+                String cell =mathcer.group();
+                expression.operators.add(new Cell(i,cell));
+                i+=cell.length();
+                continue;
+            }
+            throw new ParseIllegalExpression( "Неможливо распарсити "+ string+ " Помилка у позиції:" + i, i);
         }
         return expression;
     }
@@ -117,7 +119,7 @@ public class Expression {
             if (k==0)
                 return i;
         }
-        throw new IllegalExpression("wrong number of brackets", start);
+        throw new IllegalExpression("Не закрита дужка", start);
     }
 
     public boolean hasNext(){

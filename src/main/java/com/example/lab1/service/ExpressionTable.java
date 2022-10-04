@@ -60,7 +60,7 @@ public class ExpressionTable {
     }
     private Double execute(Expression expression) {
         if (expression.current != -1 && expression.getResult() == null)
-            throw new StackOverflowError("endless recurrent formula");
+            throw new IllegalExpression("Обчислення клітинок рекурентно зацикелне саме на себе", 0);
         if (expression.getResult() != null)
             return expression.getResult();
         return expression.setResult(infixBinary(expression,Level.PREDICATE));
@@ -74,7 +74,7 @@ public class ExpressionTable {
             else if (expression.getCurrent(1).level().compareTo(level)<0)
                 result = infixBinary(expression, Level.values()[level.ordinal() - 1]);
             else throw new IllegalExpression(
-                    "in position: " + expression.getCurrent(0).position,expression.getCurrent(0).position );
+                    "Помилка у позиції: " + expression.getCurrent(0).position,expression.getCurrent(0).position );
         }
         while (expression.hasNext() && expression.getCurrent(1).level().compareTo(level)<=0) {
             if (expression.getCurrent(1).level().compareTo(level)==0) {
@@ -82,9 +82,9 @@ public class ExpressionTable {
                 if (expression.hasNext())
                     result = ((BinaryOperator) operator).apply(result, infixBinary(expression, Level.values()[level.ordinal() - 1]));
                 else throw new IllegalExpression(
-                        "in position: " + expression.getCurrent(0).position,expression.getCurrent(0).position );
+                        "Помилка у позиції: " + expression.getCurrent(0).position,expression.getCurrent(0).position );
             } else throw new IllegalExpression(
-                    "in position: " + expression.getCurrent(0).position,expression.getCurrent(0).position );
+                    "Помилка у позиції: " + expression.getCurrent(0).position,expression.getCurrent(0).position );
         }
         return result;
     }
@@ -92,7 +92,7 @@ public class ExpressionTable {
         if (expression.hasNext()) {
             if (expression.getCurrent(1).level().compareTo(Level.TERM) != 0)
                 throw new IllegalExpression(
-                        "in position: " + expression.getCurrent(0).position,expression.getCurrent(0).position );
+                        "Помилка у позиції: " + expression.getCurrent(0).position,expression.getCurrent(0).position );
             if (expression.getCurrent(1) instanceof UnaryFunction) {
                 UnaryFunction function = (UnaryFunction) expression.next();
                 return function.apply(execute(function.getExpression()));
@@ -103,6 +103,11 @@ public class ExpressionTable {
             }
             if (expression.getCurrent(1) instanceof Cell) {
                 Cell cell = (Cell) expression.next();
+                if (cell.row<0 || cell.row>=n || cell.column<0 ||
+                        cell.column>=m || expressions[cell.row][cell.column].getString().equals(""))
+                    throw new IllegalExpression(
+                            "Посилланя на неіснуючу клітинку у позиції: " +
+                                    expression.getCurrent(0).position,expression.getCurrent(0).position );
                 return execute(cell.row,cell.column);
             }else return ((Number) expression.next()).value();
         } else return 0d;

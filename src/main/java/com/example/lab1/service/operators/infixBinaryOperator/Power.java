@@ -15,7 +15,7 @@ public class Power extends BinaryOperator {
     public Double apply(Double a1, Double a2) {
         if (stringValue.equals("^"))
             return exp(log(a1) * a2);
-        else throw new IllegalExpression("in position:" + position,position);
+        else throw new IllegalExpression("Помилка у позиції:" + position,position);
     }
     @Override
     public Level level() {
