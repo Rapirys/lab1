@@ -31,6 +31,17 @@ public class ExpressionTable {
         }
     }
 
+    public ExpressionTable(String[][] table, int columns, int rows) {
+        this.m = columns;
+        this.n = rows;
+        this.expressions = new Expression[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                expressions[i][j] = Expression.parse(table[i][j]);
+            }
+        }
+    }
+
     public String[][] executeAll(){
         String[][] result = new String[n][m];
         for (int i = 0; i<n; i++)
