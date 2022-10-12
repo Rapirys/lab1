@@ -22,6 +22,8 @@ import static java.lang.Math.max;
 
 
 public class TableController implements Initializable {
+    final int n = 30;
+    final int m = 10;
     boolean executed;
     ExpressionTable modelTable;
 
@@ -34,8 +36,11 @@ public class TableController implements Initializable {
 
     @FXML
     protected void info(){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Ілля Ротань Лабороаторна робота 1 \n");
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Ілля Ротань Лабороаторна робота 1 \n" +
+                "Введіть значенння виразу та натисніть enter,\nнатисніть на " +
+                "кнопку Обчислити/До редагування для переключення між режимами \n");
+        alert.setHeaderText("Інформація");
+        alert.setHeaderText("Інформація");
         alert.showAndWait();
     }
     @FXML
@@ -75,7 +80,14 @@ public class TableController implements Initializable {
         executed = false;
         modelTable = new ExpressionTable(table);
     }
-    private void fillTable(String[][] dataSource) {
+    private void fillTable(String[][] source) {
+        String[][] dataSource= new String[n][m];
+        for (int j=0; j<n; j++)
+            dataSource[j][0] = String.valueOf(j);
+        for (int i = 0; i< n; i++)
+            for (int j= 1; j<m; j++)
+                dataSource[i][j] = source[i][j-1];
+
         table.getColumns().clear();
 
         ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
@@ -85,10 +97,15 @@ public class TableController implements Initializable {
 
         for (int i = 0; i < dataSource[0].length; i++) {
             final int currentColumn = i;
-            TableColumn<ObservableList<String>, String> column =
-                    new TableColumn<>(Character.valueOf((char) (i+'A')).toString());
+            TableColumn<ObservableList<String>, String> column;
+            if(i != 0) {
+                column = new TableColumn<>(Character.valueOf((char) (i + 'A' - 1)).toString());
+                column.setEditable(true);
+            }else{
+                column = new TableColumn<>(Character.valueOf(' ').toString());
+                column.setEditable(false);
+            }
             column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().get(currentColumn)));
-            column.setEditable(true);
             column.setCellFactory(TextFieldTableCell.forTableColumn());
             column.setPrefWidth(100);
             column.setOnEditCommit(
@@ -100,8 +117,6 @@ public class TableController implements Initializable {
     }
 
     private  String[][] generateStartTable(){
-        final int n = 30;
-        final int m = 10;
         String[][] dataSource = new String[n][m];
         for (int i = 0; i< n; i++)
             for (int j= 0; j<m; j++)

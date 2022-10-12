@@ -9,7 +9,7 @@ public class Min extends BinaryFunction {
 
     @Override
     public Double apply(Double a1, Double a2) {
-        return Math.max(a1, a2);
+        return Math.min(a1, a2);
     }
 
     @Override

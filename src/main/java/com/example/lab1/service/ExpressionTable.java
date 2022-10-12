@@ -20,13 +20,13 @@ public class ExpressionTable {
     Integer n;
 
     public ExpressionTable(TableView<ObservableList<String>> table) {
-        this.m = table.getColumns().size();
+        this.m = table.getColumns().size()-1;
         this.n = table.getItems().size();
         this.expressions = new Expression[n][m];
         for (int i = 0; i < n; i++) {
             ObservableList<String> cells = table.getItems().get(i);
-            for (int j = 0; j < m; j++) {
-                expressions[i][j] = Expression.parse(cells.get(j));
+            for (int j = 1; j < m+1; j++) {
+                expressions[i][j-1] = Expression.parse(cells.get(j));
             }
         }
     }
